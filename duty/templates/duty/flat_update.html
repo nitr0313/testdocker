@@ -1,0 +1,64 @@
+{% extends 'duty/base_hs.html' %}
+{% load static %}
+
+{% block title %}
+Редактирование
+{% endblock title %}
+
+
+{% block content %}
+<div class="container mt-5">
+
+	<form action="" method="post">
+
+		{% csrf_token %}
+
+		{% for field in form %}
+		<div class="form-group">
+			{% if field.errors %}
+			<div class="alert alert-danger">
+				{{ field.errors }}
+			</div>
+
+			{% endif %}
+
+			{{ field.label }}<br>
+			{{ field }}
+			{% if field.label == 'Жилец' %}
+			<a href="{% url 'person_create_url' %}"><i class="material-icons">person_add</i></a>
+
+			<a href="{% if field.value %}
+			{% url 'person_update_url' id=field.value %}
+			{% else %}
+			{% url 'person_update_url' id=1 %}
+			{% endif %}" id='person_url' style="display:{% if view == 'create' %}none{% else %}inline-block{% endif %};"><i
+					class="material-icons">edit</i></a>
+
+
+			{% endif %}
+		</div>
+		{% endfor %}
+		<input name="start_day" type="text" value="{{ start_day }}" style="display:none">
+
+		<button type='submit' class='btn btn-success'>Сохранить</button>
+		{% if view == 'update' %}<a class="btn btn-danger" href="{% url 'flat_delete_url' id=flat_id %}"> Удалить
+			квартиру </a> {%endif%}
+	</form>
+	<br>
+</div>
+
+<script>
+	function edit_href(t) {
+		v = t.value;
+		o = document.getElementById('person_url');
+		if (v != "") {
+			o.style.display = 'inline-block';
+			o.href = '/duty/person/' + v + '/update/';
+		}
+		else {
+			o.style.display = 'none';
+		}
+		return t;
+	}
+</script>
+{% endblock content %}

@@ -1,0 +1,122 @@
+{% extends 'duty/base_hs.html' %}
+{% load static %}
+
+{% block title %}
+График дежурства
+{% endblock title %}
+
+
+{% block content %}
+<div class='container mt-2' style='text-align:center'>
+    <div class="row">
+        <div class="col-2" id="settings">
+            <label for="start_duty">Начало дежурства:</label>
+
+            <input type="date" id="start_duty" name="start_duty" value="{{ start_day|date:'Y-m-d' }}" />
+            <!-- <label for="reveres">Начать с последней квартиры:</label>
+            <input type="checkbox" name="revers" id="revers" {% if revers %}checked{% else %}{% endif %}> -->
+
+            <label for="entrances">Выберите подьезд из доступных:</label>
+            <select class="form-control form-control-lg" id='entrances'>
+                {% for entr in permit_entrance %}
+
+                <option {% if entr == entrance %} selected='selected' {% endif %}>{{ entr }}</option>
+                {% endfor %}
+            </select>
+
+
+            <div class="form-check" style="text-align: left;">
+                <input class="form-check-input" id="revers" type="checkbox" value=""
+                    {% if revers %}checked{% else %}{% endif %}>
+                <label class="form-check-label" for="defaultCheck1">
+                    Начать с последней квартиры.
+                </label>
+            </div>
+
+            <a href="#" id='generate_duty' class='btn btn-success' onmouseover="createHref(this)">Сформировать график
+                дежурства</a> <br>
+            <input type="button" class='btn btn-primary mt-2' value="Напечатать график"
+                onclick="PrintElem('#for-print')" />
+        </div>
+
+        <div class='for-print col-10 mt-1' id='for-print'>
+            <!-- <h1> </h1> -->
+            <table border=1 cellpadding=3px
+                style="width: 1000px;height: 750px;font-size: 25px; border: 1px solid black; border-collapse: collapse; margin-left: 50px;">
+                <caption
+                    style="caption-side: top;font-size: 2em;text-shadow: 1px 1px 0 rgba(0,0,0,.3); text-align: center;">
+                    График
+                    дежурства c {{ start_day|date:'d.m.Y' }}</caption>
+                <thead style='text-align:center;'>
+                    <th style="border: 1px solid black;" scope="col">Номер кв</th>
+                    <th style="border: 1px solid black;" scope="col">ФИО</th>
+                    <th style="border: 1px solid black;" scope="col">Дата нач деж-ва</th>
+                    <th style="border: 1px solid black;" scope="col">Дата оконч деж-ва</th>
+                </thead>
+
+                <tbody>
+                    {% if access_denied %}
+                    <tr>
+                        <td colspan="5" style="background:yellow;color:blue">
+                            <h1>У Вас нет доступа к данному подьезду</h1>
+                            <h3>За помощью вы можете обратиться к администратору сайта<h3>
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% for flat in flats %}
+                    <tr style=" border: 1px solid black;background:{{ flat.background }};">
+                        <th scope="row" style="border: 1px solid black;text-align:center"> <a
+                                href="{{ flat.get_update_url }}?start_day={{ start_day|date:'Y-m-d' }}">{{ flat.number }}
+                            </a></th>
+                        <td style="border: 1px solid black;"> {{ flat.person }} </td>
+
+                        {% if flat.active %}
+                        <td style="border: 1px solid black;text-align:center; font-size:larger">
+                            <b>{{ flat.date_duty_start|date:'d.m.y' }} </b> </td>
+                        <td style="border: 1px solid black;text-align:center; font-size:larger">
+                            <b>{{ flat.date_duty_finish|date:'d.m.y' }} </b> </td>
+                        {% else %}
+                        <td style="border: 1px solid black;text-align:center; font-size:larger" colspan=2>
+                            <b>Не дежурит</b>
+                        </td>
+                        {% endif %}
+
+
+                    </tr>
+                    {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">
+        function createHref(el) {
+            date = document.getElementById('start_duty').value;
+            entrance = document.getElementById('entrances').value;
+            revers = document.getElementById('revers').checked;
+            el.href = date + '?revers=' + revers + '&entrance=' + entrance
+            console.log(el.href)
+        }
+
+        function PrintElem(elem) {
+            Popup($(elem).html());
+        }
+
+        function Popup(data) {
+            var mywindow = window.open('', 'my div', 'height=500,width=900');
+            mywindow.document.write('<html><head><title>График дежурства</title>');
+            mywindow.document.write('</head><body style="text-align:center">');
+            mywindow.document.write(data);
+            mywindow.document.write('</body></html>');
+            mywindow.document.close(); // necessary for IE >= 10 
+            mywindow.focus(); // necessary for IE >= 10 
+            mywindow.print();
+            mywindow.close();
+            return true;
+        } 
+    </script>
+</div>
+
+{% endblock content %}

@@ -1,0 +1,26 @@
+{% extends 'duty/base_hs.html' %}
+{% load static %}
+
+{% block title %}
+Выбор дома подьезда и тд
+{% endblock title %}
+
+
+{% block content %}
+<div class="container">
+    <h1>Home page</h1>
+    <ul>
+        <li> <a href=" 
+        {% if request.user.is_authenticated %}
+            {% url 'generate' %}
+            {% else %}
+            {% url 'login' %}
+        {% endif %}
+             " class="btn btn-success">График дежурства</a>
+        </li>
+        <li> <a href="#" class="btn btn-success disable">Квитации на капремонт</a>
+        </li>
+        <li></li>
+    </ul>
+</div>
+{% endblock content %}

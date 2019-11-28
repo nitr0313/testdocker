@@ -1,0 +1,25 @@
+{% extends  'base.html' %}
+
+{% block title %}
+Логин
+{% endblock title %}
+
+
+{% block content %}
+<div class="container">
+    <div class="card card-login">
+        <div class="card-body">
+            <h4 class="card-title">Введите логин пароль</h4>
+
+            <form method="post">
+                {% csrf_token %}
+                <!--<input type="hidden" name="next" value="{{ next }}">-->
+
+                {{ form }}
+
+                <button type="submit" class="btn btn-primary btn-block">Log in</button>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}
