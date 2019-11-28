@@ -12,6 +12,6 @@ ADD . /app
 # RUN apt-get clean && apt-get update
 # RUN pip install django
 # Install dependencies 
-RUN pip install --upgrade pip
+# RUN pip install --upgrade pip
 RUN pip install pipenv
 RUN pipenv install --system
