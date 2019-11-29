@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from . import models
+from .models import Person, Street, Address, Flat
 from . import forms
 import datetime
 from . import utils
@@ -25,11 +25,11 @@ class Generate(LoginRequiredMixin, View):
                 permit_entrance.append(int(group['name'][0]))
 
         permit_entrance = [x for x in range(1,9)] if request.user.is_staff else permit_entrance
-        person = models.Person.objects.all()[0] #get(user=request.user)
+        person = Person.objects.all()[0] #get(user=request.user)
 
         entrance = request.GET.get("entrance", False)
         if not entrance:
-            flat = models.Flat.objects.get(person=person)
+            flat = Flat.objects.get(person=person)
             entrance = flat.entrance
 
         # chois_form = forms.Homepage_Form_Unique()
@@ -65,7 +65,7 @@ class FlatUpdate(LoginRequiredMixin, View):
 
     def get(self, request, id):
         start_day = request.GET.get('start_day', '')
-        flat = models.Flat.objects.get(id=id)
+        flat = Flat.objects.get(id=id)
         bound_form = forms.FlatForm(instance=flat)
         con = {
             'form': bound_form,
@@ -78,7 +78,7 @@ class FlatUpdate(LoginRequiredMixin, View):
     def post(self, request, id):
         start_day = request.POST.get('start_day', '')
 
-        flat = models.Flat.objects.get(id=id)
+        flat = Flat.objects.get(id=id)
         bound_form = forms.FlatForm(request.POST, instance=flat)
         # print(f'day {start_day}')
         if bound_form.is_valid():
@@ -115,14 +115,14 @@ class FlatCreate(LoginRequiredMixin, View):
 
 class FlatDelete(LoginRequiredMixin, View):
     def get(self, request, id):
-        fl = models.Flat.objects.get(id=id)
+        fl = Flat.objects.get(id=id)
         fl.delete()
         return redirect('generate')
 
 
 class PersonUpdate(LoginRequiredMixin, View):
     def get(self, request, id):
-        person = models.Person.objects.get(id=id)
+        person = Person.objects.get(id=id)
         bound_form = forms.PersonForm(instance=person)
         con = {
             'form': bound_form,
@@ -132,7 +132,7 @@ class PersonUpdate(LoginRequiredMixin, View):
 
     def post(self, request, id):
         usr = request.user
-        person = models.Person.objects.get(id=id)
+        person = Person.objects.get(id=id)
         if not usr.is_staff:
             print('Ты не пройдешь!!!!')
             return redirect('generate')

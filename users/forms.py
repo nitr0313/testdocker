@@ -8,7 +8,17 @@ class CustomUserCreationForm(UserCreationForm):
         fields = ('email', 'username')
 
 
+
 class CustomUserChangeForm(UserChangeForm):
     class Meta(UserChangeForm):
         model = get_user_model()   
         fields = ('email', 'username')
+        fieldsets = (
+        (None, {
+            'fields': ('url', 'title', 'content', 'sites')
+        }),
+        ('Advanced options', {
+            'classes': ('collapse',),
+            'fields': ('registration_required', 'template_name'),
+        }),
+    )

@@ -6,8 +6,8 @@ ENV PYTHONUNBUFFERED 1
 WORKDIR /app
 
 # COPY CODE and FipFiles
-COPY Pipfile Pipfile.lock /code/
-ADD . /app
+COPY Pipfile Pipfile.lock /app/
+
 
 # RUN apt-get clean && apt-get update
 # RUN pip install django
@@ -15,3 +15,5 @@ ADD . /app
 # RUN pip install --upgrade pip
 RUN pip install pipenv
 RUN pipenv install --system
+
+ADD . /app

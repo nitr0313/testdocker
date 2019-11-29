@@ -3,6 +3,7 @@ from django.urls.base import reverse
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.contrib.auth import get_user_model
 # Create your models here.
 
 
@@ -63,8 +64,7 @@ class Street(models.Model):
 
 class Person(models.Model):
     fullname = models.CharField("Полное имя", max_length=50)
-    # user = models.OneToOneField(
-    #     User, on_delete=models.CASCADE, null=True, blank=True)
+    user = models.OneToOneField(get_user_model() , on_delete=models.CASCADE, null=True, blank=True)
 
     class Meta:
         verbose_name = "Жилец"
